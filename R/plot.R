@@ -6,21 +6,21 @@
 ## Plot
 ##########
 #x a gsynth object
-# type of the plot; axes limits; axes labels; 
+# type of the plot; axes limits; axes labels;
 # show raw data in "counterfactual" mode # ("none","band","all")
 # main: whether to show the title;
-# nfactors: whose loadings to be plotted 
+# nfactors: whose loadings to be plotted
 # id: individual plot
-plot.gsynth <- function(x,  
-                        type = "gap", 
-                        xlim = NULL, 
+plot.gsynth <- function(x,
+                        type = "gap",
+                        xlim = NULL,
                         ylim = NULL,
-                        xlab = NULL, 
+                        xlab = NULL,
                         ylab = NULL,
                         legendOff = FALSE,
-                        raw = "none", 
+                        raw = "none",
                         main = NULL,
-                        nfactors = NULL, 
+                        nfactors = NULL,
                         id = NULL,
                         axis.adjust = FALSE,
                         theme.bw = FALSE,
@@ -30,7 +30,7 @@ plot.gsynth <- function(x,
 
     ##-------------------------------##
     ## Checking Parameters
-    ##-------------------------------##  
+    ##-------------------------------##
 
     outcome <- NULL
     ATT <- NULL
@@ -50,7 +50,7 @@ plot.gsynth <- function(x,
         stop("Not a \"gsynth\" object.")
     }
     if (!type %in% c("gap","counterfactual","ct","factors","missing","loadings","raw")) {
-        stop("\"type\" option misspecified.")        
+        stop("\"type\" option misspecified.")
     }
     if (type == "ct") {
       type <- "counterfactual"
@@ -95,14 +95,14 @@ plot.gsynth <- function(x,
             stop("\"xlab\" is not a string.")
         } else {
             xlab <- xlab[1]
-        }   
+        }
     }
     if (is.null(ylab)==FALSE) {
         if (is.character(ylab) == FALSE) {
             stop("\"ylab\" is not a string.")
         } else {
             ylab <- ylab[1]
-        }   
+        }
     }
     if (is.logical(legendOff) == FALSE & is.numeric(legendOff)==FALSE) {
         stop("\"legendOff\" is not a logical flag.")
@@ -110,20 +110,20 @@ plot.gsynth <- function(x,
     if (type == "counterfactual") {
         if (! raw %in% c("none","band","all")) {
             cat("\"raw\" option misspecifed. Reset to \"none\".")
-            raw <- "none" 
+            raw <- "none"
         }
         if (is.null(id)==FALSE) {
             if (length(id)>1) {
-               stop("More than 1 element in \"id\".") 
+               stop("More than 1 element in \"id\".")
             }
-        } 
+        }
     }
     if (is.null(main)==FALSE) {
         if (is.character(main) == FALSE) {
             stop("\"main\" is not a string.")
         } else {
             main <- main[1]
-        }   
+        }
     }
     if (is.null(nfactors)==FALSE) {
         if (is.numeric(nfactors)==FALSE) {
@@ -132,8 +132,8 @@ plot.gsynth <- function(x,
             nfactors <- nfactors[1]
             if (nfactors%%1!=0 | nfactors<=0) {
                 stop("\"nfactors\" is not a positive integer.")
-            }  
-        } 
+            }
+        }
     }
 
     if (axis.adjust==TRUE) {
@@ -149,10 +149,10 @@ plot.gsynth <- function(x,
             x.h <- 0
         }
     }
-    
+
     ##-------------------------------##
     ## Plotting
-    ##-------------------------------##  
+    ##-------------------------------##
 
     I.tr <- x$I.tr
     D.tr <- x$D.tr
@@ -171,7 +171,7 @@ plot.gsynth <- function(x,
     ## m <- x$m
     Ntr <- x$Ntr
     Nco <- x$Nco
-    N <- x$N 
+    N <- x$N
     force <- x$force
     F.hat <- x$factor
     L.tr <- x$lambda.tr
@@ -183,7 +183,7 @@ plot.gsynth <- function(x,
     } else {
         r <- 0
     }
-    
+
     if (type!="missing") {
         if (is.null(id)==TRUE) {
             id <- x$id.tr
@@ -217,22 +217,22 @@ plot.gsynth <- function(x,
       }
       if (type %in% c("gap","factors")) {
         shade.post <- FALSE
-      }    
+      }
     } else {
       if (!class(shade.post) %in% c("logical","numeric")) {
         stop("Wrong type for option \"shade.post\"")
       }
     }
-    
+
     ## type of plots
-    if (type == "raw"| type == "counterfactual" | 
-        type == "factors" |  length(id) == 1 | type =="missing" | 
+    if (type == "raw"| type == "counterfactual" |
+        type == "factors" |  length(id) == 1 | type =="missing" |
         type=="loadings") {
         time <- x$time
         if (!is.numeric(time[1])) {
             time <- 1:TT
         }
-        
+
         if (type!="missing") {
             if (length(id) == 1) {
                 time.bf <- time[T0[which(id == x$id.tr)]]
@@ -253,7 +253,7 @@ plot.gsynth <- function(x,
             ## }
         } else {
             show <- 1:length(time)
-        }     
+        }
     }
 
     if (type == "gap")  { ## variable treatment timing
@@ -261,9 +261,9 @@ plot.gsynth <- function(x,
         time.bf <- 0 ## before treatment
 
         if (length(xlim) != 0) {
-            show <- which(time>=xlim[1]& time<=xlim[2])     
+            show <- which(time>=xlim[1]& time<=xlim[2])
         } else {
-            show <- 1:length(time)    
+            show <- 1:length(time)
         }
     }
 
@@ -292,7 +292,7 @@ plot.gsynth <- function(x,
     ## } else {
         T.b <- 1:length(show)
     ## }
- 
+
 
     ## legend on/off
     if (legendOff == TRUE) {
@@ -302,7 +302,7 @@ plot.gsynth <- function(x,
     }
 
     ############  START  ###############
-    
+
     if (type == "raw") {
         ## axes labels
         if (is.null(xlab)==TRUE) {
@@ -315,7 +315,7 @@ plot.gsynth <- function(x,
         } else if (ylab == "") {
             ylab <- NULL
         }
-            
+
         pst <- D.tr
         for (i in 1:Ntr){
             pst[T0[i],i] <- 1 ## paint the period right before treatment
@@ -334,9 +334,9 @@ plot.gsynth <- function(x,
                                             rep("co",(Nco*nT)),
                                             rep("tr.pst",length(Y.tr.pst))),
                                  "id" = c(rep(1:N,each = nT), id.tr.pst*(-1)))
-        
+
         ## theme
-        p <- ggplot(data) 
+        p <- ggplot(data)
         if (theme.bw == TRUE) {
           p <- p + theme_bw()
         }
@@ -347,15 +347,15 @@ plot.gsynth <- function(x,
                   plot.title = element_text(size=20,
                                             hjust = 0.5,
                                             face="bold",
-                                            margin = margin(10, 0, 10, 0)))        
-        
+                                            margin = margin(10, 0, 10, 0)))
+
         if (x$sameT0==TRUE) {
-            p <- p + geom_vline(xintercept=time.bf,colour=line.color,size = 2) 
+            p <- p + geom_vline(xintercept=time.bf,colour=line.color,size = 2)
             if (shade.post == TRUE) {
-              p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-            }  
+              p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+            }
         }
-        
+
         ## main
         p <- p + geom_line(aes(time, outcome,
                                colour = type,
@@ -375,7 +375,7 @@ plot.gsynth <- function(x,
         }
         set.linetypes = c("solid","solid","solid")
         set.linewidth = c(0.5, 0.5, 0.5)
-        
+
         p <- p + scale_colour_manual(limits = set.limits,
                                      labels = set.labels,
                                      values =set.colors) +
@@ -387,10 +387,10 @@ plot.gsynth <- function(x,
                               values = set.linewidth) +
             guides(linetype = guide_legend(title=NULL, ncol=3),
                    colour = guide_legend(title=NULL, ncol=3),
-                   size = guide_legend(title=NULL, ncol=3)) 
-        
+                   size = guide_legend(title=NULL, ncol=3))
+
         if (!is.numeric(time.label)) {
-            p <- p + 
+            p <- p +
                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
         } else {
             p <- p + scale_x_continuous(labels=scaleFUN)
@@ -408,11 +408,10 @@ plot.gsynth <- function(x,
             p <- p + coord_cartesian(ylim = ylim)
         }
 
-        
-        suppressWarnings(print(p))
-        
-    } else if (type == "gap") { 
-        
+        return(p)
+
+    } else if (type == "gap") {
+
         if (length(id) == 1 & !(id[1] %in% x$id.tr)) { ## error
             stop(paste(id,"not in the treatment group"))
         } else { ## no error
@@ -432,42 +431,42 @@ plot.gsynth <- function(x,
             } else if (ylab == "") {
                 ylab <- NULL
             }
-            
+
             ## title
             if (length(id) == 1 && !is.null(x$est.ind)) { ## id specified
-                maintext <- paste(x$index[1],"=",id) 
+                maintext <- paste(x$index[1],"=",id)
             }  else {
                 maintext <- "Estimated ATT"
-            } 
-            
+            }
+
             ## contruct data for plotting
-            if (is.null(x$est.att)==TRUE) { 
+            if (is.null(x$est.att)==TRUE) {
                 cat("Uncertainty estimates not available.\n")
                 if (length(id) == 1) { ## id specified
                     data <- cbind.data.frame(time, x$eff)[show,]
                     colnames(data) <- c("time","ATT")
                 } else {
-                    data <- cbind.data.frame(time, ATT = x$att)[show,] 
-                } 
+                    data <- cbind.data.frame(time, ATT = x$att)[show,]
+                }
             } else {
                 if (length(id) == 1 && !is.null(x$est.ind)) { ## id specified
                     id <- which(x$id.tr == id)
                     tb <- x$est.ind[,,id]
-                    time.bf <- time[T0[id]] 
+                    time.bf <- time[T0[id]]
                     time <- time - time.bf
                     time.bf <- 0
                     if (!is.null(tb)) {
                         colnames(tb) <- c("ATT", "S.E.", "CI.lower", "CI.upper","p.value")
                     } else {
                         tb <- as.matrix(x$eff[,id])
-                        colnames(tb) <- "ATT" 
-                    } 
-                } 
+                        colnames(tb) <- "ATT"
+                    }
+                }
                 data <- cbind.data.frame(time, tb)[show,]
             }
-             
+
             ### plotting
-            p <- ggplot(data) 
+            p <- ggplot(data)
             ## black/white theme
             if (theme.bw == TRUE) {
               p <- p + theme_bw()
@@ -481,18 +480,18 @@ plot.gsynth <- function(x,
                                                 face="bold",
                                                 margin = margin(10, 0, 10, 0)))
             if (shade.post == TRUE) {
-              p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-            }  
-           
-            
+              p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+            }
+
+
             ## point estimates
             p <- p + geom_line(aes(time, ATT), size = 1.2)
-             
+
             ## confidence intervals
             if (is.null(x$est.att)==FALSE || !(is.null(x$est.ind)&length(id) == 1)) {
                 p <- p + geom_ribbon(aes(x = time, ymin=CI.lower, ymax=CI.upper),alpha=0.2)
             }
-            
+
             ## title
             if (is.null(main) == TRUE) {
                 p <- p + ggtitle(maintext)
@@ -503,19 +502,19 @@ plot.gsynth <- function(x,
             ## ylim
             if (is.null(ylim) == FALSE) {
                 p <- p + coord_cartesian(ylim = ylim)
-            }            
-            
-            suppressWarnings(print(p))
-        }  ## end of "gap" (in case of no id error)
-       
-        
-    } else if (type=="counterfactual") { 
+            }
 
-        if (length(id) == 1|length(x$id.tr) == 1|x$sameT0==TRUE) { 
+            return(p)
+        }  ## end of "gap" (in case of no id error)
+
+
+    } else if (type=="counterfactual") {
+
+        if (length(id) == 1|length(x$id.tr) == 1|x$sameT0==TRUE) {
             if (length(id)==1 & !(id[1]%in%x$id.tr)) { ## error
-            
+
                 cat(paste(id,"not in the treatment group"))
-            
+
             } else { ## one treated unit case
 
                 ## axes labels
@@ -529,23 +528,23 @@ plot.gsynth <- function(x,
                 } else if (ylab == "") {
                     ylab <- NULL
                 }
-             
+
                 if (length(id) == 1 | length(x$id.tr) == 1) { ## one treated unit
-  
+
                     if (is.null(id) == TRUE) {
                         id <- x$id.tr
                     }
-                    maintext <- paste("Treated and Counterfactual (",id,")",sep="") 
+                    maintext <- paste("Treated and Counterfactual (",id,")",sep="")
                     tr.info <- Y.tr[,which(id==x$id.tr)]
-                    ct.info <- Y.ct[,which(id==x$id.tr)] 
-                    if (raw == "none") { 
+                    ct.info <- Y.ct[,which(id==x$id.tr)]
+                    if (raw == "none") {
                         data <- cbind.data.frame("time" = rep(time[show],2),
                                                  "outcome" = c(tr.info[show],
                                                                ct.info[show]),
                                                  "type" = c(rep("tr",nT),
                                                             rep("ct",nT)))
                         ## theme
-                        p <- ggplot(data) 
+                        p <- ggplot(data)
                         if (theme.bw == TRUE) {
                           p <- p + theme_bw()
                         }
@@ -556,16 +555,16 @@ plot.gsynth <- function(x,
                                   plot.title = element_text(size=20,
                                                             hjust = 0.5,
                                                             face="bold",
-                                                            margin = margin(10, 0, 10, 0))) 
+                                                            margin = margin(10, 0, 10, 0)))
                         if (shade.post == TRUE) {
-                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                        }        
+                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                        }
 
                         ## main
                         p <- p + geom_line(aes(time, outcome,
                                                colour = type,
                                                size = type,
-                                               linetype = type)) 
+                                               linetype = type))
                         ## legend
                         set.limits = c("tr","ct")
                         set.labels = c("Treated", "Estimated Y(0)")
@@ -584,18 +583,18 @@ plot.gsynth <- function(x,
                             guides(linetype = guide_legend(title=NULL, ncol=2),
                                    colour = guide_legend(title=NULL, ncol=2),
                                    size = guide_legend(title=NULL, ncol=2))
-                        
+
                         if (!is.numeric(time.label)) {
-                            p <- p + 
+                            p <- p +
                                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                         } else {
                             p <- p + scale_x_continuous(labels=scaleFUN)
                         }
 
-                    
+
                     } else if  (raw == "band") {
 
-                        Y.co.90 <- t(apply(Y.co, 1, quantile, prob=c(0.05,0.95), na.rm = TRUE)) 
+                        Y.co.90 <- t(apply(Y.co, 1, quantile, prob=c(0.05,0.95), na.rm = TRUE))
                         data <- cbind.data.frame("time" = rep(time[show],2),
                                                  "outcome" = c(tr.info[show],
                                                                ct.info[show]),
@@ -605,9 +604,9 @@ plot.gsynth <- function(x,
                         data.band <- cbind.data.frame(time, Y.co.90)[show,]
                         colnames(data.band) <- c("time","co5","co95")
 
-                    
-                        ## theme 
-                        p <- ggplot(data) 
+
+                        ## theme
+                        p <- ggplot(data)
                         if (theme.bw == TRUE) {
                           p <- p + theme_bw()
                         }
@@ -620,8 +619,8 @@ plot.gsynth <- function(x,
                                                             face="bold",
                                                             margin = margin(10, 0, 10, 0)))
                         if (shade.post == TRUE) {
-                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                        }      
+                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                        }
 
                         ## main
                         p <- p + geom_line(aes(time, outcome,
@@ -652,17 +651,17 @@ plot.gsynth <- function(x,
                                               values = set.linewidth) +
                             guides(linetype = guide_legend(title=NULL, ncol=3),
                                    colour = guide_legend(title=NULL, ncol=3),
-                                   size = guide_legend(title=NULL, ncol=3)) 
+                                   size = guide_legend(title=NULL, ncol=3))
 
                         if (!is.numeric(time.label)) {
-                            p <- p + 
+                            p <- p +
                                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                         } else {
                             p <- p + scale_x_continuous(labels=scaleFUN)
                         }
-                    
+
                     } else if (raw == "all") { ## plot all the raw data
-                    
+
                         data <- cbind.data.frame("time" = rep(time[show],(2 + Nco)),
                                                  "outcome" = c(tr.info[show],
                                                                ct.info[show],
@@ -673,9 +672,9 @@ plot.gsynth <- function(x,
                                                  "id" = c(rep("tr",nT),
                                                           rep("ct",nT),
                                                           rep(c(x$id.co), each = nT)))
-                    
+
                         ## theme
-                        p <- ggplot(data) 
+                        p <- ggplot(data)
                         if (theme.bw == TRUE) {
                           p <- p + theme_bw()
                         }
@@ -688,8 +687,8 @@ plot.gsynth <- function(x,
                                                             face="bold",
                                                             margin = margin(10, 0, 10, 0)))
                         if (shade.post == TRUE) {
-                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                        }  
+                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                        }
                         ## main
                         p <- p + geom_line(aes(time, outcome,
                                                colour = type,
@@ -703,7 +702,7 @@ plot.gsynth <- function(x,
                         set.colors = c("black","#4682B420","steelblue")
                         set.linetypes = c("solid","solid","longdash")
                         set.linewidth = c(line.width[1],line.width[2],line.width[1])
-                    
+
                         p <- p + scale_colour_manual(limits = set.limits,
                                                      labels = set.labels,
                                                      values =set.colors) +
@@ -715,17 +714,17 @@ plot.gsynth <- function(x,
                                               values = set.linewidth) +
                             guides(linetype = guide_legend(title=NULL, ncol=3),
                                    colour = guide_legend(title=NULL, ncol=3),
-                                   size = guide_legend(title=NULL, ncol=3)) 
+                                   size = guide_legend(title=NULL, ncol=3))
 
                         if (!is.numeric(time.label)) {
-                            p <- p + 
+                            p <- p +
                                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                         } else {
                             p <- p + scale_x_continuous(labels=scaleFUN)
-                        }                       
-                     
-                    } 
-                
+                        }
+
+                    }
+
                 } else { # begin multiple treated unit case
                     maintext <- "Treated and Counterfactual Averages"
                     if (raw == "none") {
@@ -733,9 +732,9 @@ plot.gsynth <- function(x,
                                                  "outcome" = c(Yb[show,1],
                                                                Yb[show,2]),
                                                  "type" = c(rep("tr",nT),
-                                                            rep("co",nT))) 
+                                                            rep("co",nT)))
                         ## theme
-                        p <- ggplot(data) 
+                        p <- ggplot(data)
                         if (theme.bw == TRUE) {
                           p <- p + theme_bw()
                         }
@@ -748,8 +747,8 @@ plot.gsynth <- function(x,
                                                             face="bold",
                                                             margin = margin(10, 0, 10, 0)))
                         if (shade.post == TRUE) {
-                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                        }      
+                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                        }
                         ## main
                         p <- p + geom_line(aes(time, outcome,
                                                colour = type,
@@ -774,20 +773,20 @@ plot.gsynth <- function(x,
                                               values = set.linewidth) +
                             guides(linetype = guide_legend(title=NULL, ncol=2),
                                    colour = guide_legend(title=NULL, ncol=2),
-                                   size = guide_legend(title=NULL, ncol=2)) 
+                                   size = guide_legend(title=NULL, ncol=2))
 
                         if (!is.numeric(time.label)) {
-                            p <- p + 
+                            p <- p +
                                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                         } else {
                             p <- p + scale_x_continuous(labels=scaleFUN)
                         }
-                    
+
                     } else if  (raw == "band") {
-                    
+
                         Y.tr.90 <- t(apply(Y.tr, 1, quantile, prob=c(0.05,0.95),na.rm=TRUE))
                         Y.co.90 <- t(apply(Y.co, 1, quantile, prob=c(0.05,0.95),na.rm=TRUE))
-                    
+
                         data <- cbind.data.frame("time" = rep(time[show],2),
                                                  "outcome" = c(Yb[show,1],
                                                                Yb[show,2]),
@@ -796,9 +795,9 @@ plot.gsynth <- function(x,
 
                         data.band <- cbind.data.frame(time, Y.tr.90, Y.co.90)[show,]
                         colnames(data.band) <- c("time","tr5","tr95","co5","co95")
-                    
-                        ## theme 
-                        p <- ggplot(data) 
+
+                        ## theme
+                        p <- ggplot(data)
                         if (theme.bw == TRUE) {
                           p <- p + theme_bw()
                         }
@@ -811,8 +810,8 @@ plot.gsynth <- function(x,
                                                             face="bold",
                                                             margin = margin(10, 0, 10, 0)))
                         if (shade.post == TRUE) {
-                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf, ymin=-Inf, ymax=Inf, alpha = .3) 
-                        }      
+                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf, ymin=-Inf, ymax=Inf, alpha = .3)
+                        }
                         ## main
                         p <- p + geom_line(aes(time, outcome,
                                                colour = type,
@@ -846,17 +845,17 @@ plot.gsynth <- function(x,
                                               values = set.linewidth) +
                             guides(linetype = guide_legend(title=NULL, ncol=2),
                                    colour = guide_legend(title=NULL, ncol=2),
-                                   size = guide_legend(title=NULL, ncol=2)) 
+                                   size = guide_legend(title=NULL, ncol=2))
 
                         if (!is.numeric(time.label)) {
-                            p <- p + 
+                            p <- p +
                                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                         } else {
                             p <- p + scale_x_continuous(labels=scaleFUN)
                         }
-                    
+
                     } else if (raw == "all") { ## plot all the raw data
-                    
+
                         data <- cbind.data.frame("time" = rep(time[show],(2 + N)),
                                                  "outcome" = c(Yb[show,1],
                                                                Yb[show,2],
@@ -869,9 +868,9 @@ plot.gsynth <- function(x,
                                                  "id" = c(rep("tr",nT),
                                                           rep("co",nT),
                                                           rep(c(x$id.tr,x$id.co),
-                                                              each = nT))) 
+                                                              each = nT)))
                         ## theme
-                        p <- ggplot(data) 
+                        p <- ggplot(data)
                         if (theme.bw == TRUE) {
                           p <- p + theme_bw()
                         }
@@ -882,10 +881,10 @@ plot.gsynth <- function(x,
                                   plot.title = element_text(size=20,
                                                             hjust = 0.5,
                                                             face="bold",
-                                                            margin = margin(10, 0, 10, 0))) 
+                                                            margin = margin(10, 0, 10, 0)))
                         if (shade.post == TRUE) {
-                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                        }      
+                          p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                        }
                         ## main
                         p <- p + geom_line(aes(time, outcome,
                                                colour = type,
@@ -901,7 +900,7 @@ plot.gsynth <- function(x,
                         set.colors = c("black","steelblue","#77777750","#4682B420")
                         set.linetypes = c("solid","longdash","solid","solid")
                         set.linewidth = rep(line.width,each=2)
-                    
+
                         p <- p + scale_colour_manual(limits = set.limits,
                                                      labels = set.labels,
                                                      values =set.colors) +
@@ -913,10 +912,10 @@ plot.gsynth <- function(x,
                                               values = set.linewidth) +
                             guides(linetype = guide_legend(title=NULL, ncol=2),
                                    colour = guide_legend(title=NULL, ncol=2),
-                                   size = guide_legend(title=NULL, ncol=2)) 
+                                   size = guide_legend(title=NULL, ncol=2))
 
                         if (!is.numeric(time.label)) {
-                            p <- p + 
+                            p <- p +
                                 scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                         } else {
                             p <- p + scale_x_continuous(labels=scaleFUN)
@@ -931,12 +930,12 @@ plot.gsynth <- function(x,
                 } else if (main!="") {
                     p <- p + ggtitle(main)
                 }
-            
+
                 ## ylim
                 if (is.null(ylim) == FALSE) {
                     p <- p + coord_cartesian(ylim = ylim)
-                }                
-                suppressWarnings(print(p))
+                }
+                return(p)
             }
         } else {
             maintext <- "Treated and Counterfactual Averages"
@@ -952,7 +951,7 @@ plot.gsynth <- function(x,
             } else if (ylab == "") {
                 ylab <- NULL
             }
-            
+
             xx <- ct.adjsut(x$Y.tr, x$Y.ct, x$T0)
 
             time <- xx$timeline
@@ -973,9 +972,9 @@ plot.gsynth <- function(x,
                                          "outcome" = c(Yb[show,1],
                                                        Yb[show,2]),
                                          "type" = c(rep("tr",nT),
-                                                    rep("co",nT))) 
+                                                    rep("co",nT)))
                 ## theme
-                p <- ggplot(data) 
+                p <- ggplot(data)
                 if (theme.bw == TRUE) {
                   p <- p + theme_bw()
                 }
@@ -988,8 +987,8 @@ plot.gsynth <- function(x,
                                                     face="bold",
                                                     margin = margin(10, 0, 10, 0)))
                 if (shade.post == TRUE) {
-                  p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                }      
+                  p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                }
                 ## main
                 p <- p + geom_line(aes(time, outcome,
                                        colour = type,
@@ -1014,20 +1013,20 @@ plot.gsynth <- function(x,
                                       values = set.linewidth) +
                     guides(linetype = guide_legend(title=NULL, ncol=2),
                             colour = guide_legend(title=NULL, ncol=2),
-                            size = guide_legend(title=NULL, ncol=2)) 
+                            size = guide_legend(title=NULL, ncol=2))
 
                 if (!is.numeric(time.label)) {
-                    p <- p + 
+                    p <- p +
                         scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                 } else {
                     p <- p + scale_x_continuous(labels=scaleFUN)
                 }
-                    
+
             } else if  (raw == "band") {
-                    
+
                 Y.tr.90 <- t(apply(Y.tr.aug, 1, quantile, prob=c(0.05,0.95),na.rm=TRUE))
                 ## Y.co.90 <- t(apply(Y.co, 1, quantile, prob=c(0.05,0.95),na.rm=TRUE))
-                    
+
                 data <- cbind.data.frame("time" = rep(time[show],2),
                                          "outcome" = c(Yb[show,1],
                                                        Yb[show,2]),
@@ -1036,9 +1035,9 @@ plot.gsynth <- function(x,
 
                 data.band <- cbind.data.frame(time, Y.tr.90)[show,]
                 colnames(data.band) <- c("time","tr5","tr95")
-                    
+
                 ## theme
-                p <- ggplot(data) 
+                p <- ggplot(data)
                 if (theme.bw == TRUE) {
                   p <- p + theme_bw()
                 }
@@ -1051,8 +1050,8 @@ plot.gsynth <- function(x,
                                                     face="bold",
                                                     margin = margin(10, 0, 10, 0)))
                 if (shade.post == TRUE) {
-                  p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                }      
+                  p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                }
                 ## main
                 p <- p + geom_line(aes(time, outcome,
                                        colour = type,
@@ -1085,14 +1084,14 @@ plot.gsynth <- function(x,
                            size = guide_legend(title=NULL, ncol=2))
 
                 if (!is.numeric(time.label)) {
-                    p <- p + 
+                    p <- p +
                         scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                 } else {
                     p <- p + scale_x_continuous(labels=scaleFUN)
-                } 
-                    
+                }
+
             } else if (raw == "all") { ## plot all the raw data
-                    
+
                 data <- cbind.data.frame("time" = rep(time[show],(2 + Ntr)),
                                          "outcome" = c(Yb[show,1],
                                                        Yb[show,2],
@@ -1103,9 +1102,9 @@ plot.gsynth <- function(x,
                                           "id" = c(rep("tr",nT),
                                                   rep("co",nT),
                                                   rep(c(x$id.tr),
-                                                      each = nT))) 
+                                                      each = nT)))
                 ## theme
-                p <- ggplot(data) 
+                p <- ggplot(data)
                 if (theme.bw == TRUE) {
                   p <- p + theme_bw()
                 }
@@ -1116,10 +1115,10 @@ plot.gsynth <- function(x,
                           plot.title = element_text(size=20,
                                                     hjust = 0.5,
                                                     face="bold",
-                                                    margin = margin(10, 0, 10, 0))) 
+                                                    margin = margin(10, 0, 10, 0)))
                 if (shade.post == TRUE) {
-                  p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3) 
-                }      
+                  p <- p + annotate("rect", xmin= time.bf, xmax= Inf,ymin=-Inf, ymax=Inf, alpha = .3)
+                }
                 ## main
                 p <- p + geom_line(aes(time, outcome,
                                        colour = type,
@@ -1134,7 +1133,7 @@ plot.gsynth <- function(x,
                 set.colors = c("black","steelblue","#77777750")
                 set.linetypes = c("solid","longdash","solid")
                 set.linewidth = c(rep(line.width[1],2),line.width[2])
-                    
+
                 p <- p + scale_colour_manual(limits = set.limits,
                                              labels = set.labels,
                                              values =set.colors) +
@@ -1146,10 +1145,10 @@ plot.gsynth <- function(x,
                                       values = set.linewidth) +
                     guides(linetype = guide_legend(title=NULL, ncol=2),
                            colour = guide_legend(title=NULL, ncol=2),
-                           size = guide_legend(title=NULL, ncol=2)) 
+                           size = guide_legend(title=NULL, ncol=2))
 
                 if (!is.numeric(time.label)) {
-                    p <- p + 
+                    p <- p +
                         scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
                 } else {
                     p <- p + scale_x_continuous(labels=scaleFUN)
@@ -1166,12 +1165,12 @@ plot.gsynth <- function(x,
             ## ylim
             if (is.null(ylim) == FALSE) {
                 p <- p + coord_cartesian(ylim = ylim)
-            }            
-            suppressWarnings(print(p))
+            }
+            return(p)
         }
 
     } else if (type=="factors") {
-        
+
         if (x$r.cv==0) {
             cat("No factors included in the model.\n")
         } else {
@@ -1199,7 +1198,7 @@ plot.gsynth <- function(x,
                                      "factor" = c(F.hat[show,])*rep(norm,each=nT),
                                      "group" = as.factor(c(rep(1:r,each=nT))))
             ## theme
-            p <- ggplot(data) 
+            p <- ggplot(data)
             if (theme.bw == TRUE) {
               p <- p + theme_bw()
             }
@@ -1210,7 +1209,7 @@ plot.gsynth <- function(x,
                       plot.title = element_text(size=20,
                                                 hjust = 0.5,
                                                 face="bold",
-                                                margin = margin(10, 0, 10, 0)))  
+                                                margin = margin(10, 0, 10, 0)))
             ## main plot
             p <- p + geom_line(aes(time, factor,
                                    colour = group,
@@ -1219,35 +1218,35 @@ plot.gsynth <- function(x,
 
             brew.colors <- c("black","steelblue","#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#D9D9D9")
             set.colors = brew.colors[1:r]
-            p <- p + scale_colour_manual(values =set.colors) 
+            p <- p + scale_colour_manual(values =set.colors)
 
             ## legend
-            p <- p + guides(colour = guide_legend(title="Factor(s)", ncol=4)) 
+            p <- p + guides(colour = guide_legend(title="Factor(s)", ncol=4))
 
             if (!is.numeric(time.label)) {
-                p <- p + 
+                p <- p +
                     scale_x_continuous(expand = c(0, 0), breaks = show[T.b], labels = time.label[T.b])
             }
-           
+
             ## ylim
             if (is.null(ylim) == FALSE) {
                 p <- p + coord_cartesian(ylim = ylim)
-            }            
-            suppressWarnings(print(p))
+            }
+            return(p)
         }
-        
+
     } else if (type=="loadings") {
 
-      
+
       if (x$r.cv==0) {
-        cat("No factors are included in the model.\n") 
+        cat("No factors are included in the model.\n")
       } else {
             ## number of loadings to be plotted
         if (is.null(nfactors)==TRUE) {
-          nfactors<-min(x$r.cv,4) 
+          nfactors<-min(x$r.cv,4)
         } else if (nfactors>x$r.cv) {
           cat("Too many factors specified. ")
-          nfactors<-min(x$r.cv,4) 
+          nfactors<-min(x$r.cv,4)
         }
         if (nfactors == 1) {
           cat("Loadings for the first factor are shown...\n")
@@ -1280,7 +1279,7 @@ plot.gsynth <- function(x,
           p <- ggplot(data, aes(x=group, y=L1, fill = group)) +
           geom_boxplot(alpha = 0.7) +
           coord_flip() + guides(fill=FALSE) +
-          xlab("") + ylab("Factor Loading")  
+          xlab("") + ylab("Factor Loading")
         } else {
 
           if (x$Ntr < 5) {
@@ -1306,11 +1305,11 @@ plot.gsynth <- function(x,
             theme(plot.title = element_text(hjust = 0.5))
           }
         }
-        suppressWarnings(print(p))
+        return(p)
       }
-           
+
     } else if (type=="missing") {
-        
+
         if (is.null(xlab)==TRUE) {
             xlab <- x$index[2]
         } else if (xlab == "") {
@@ -1378,16 +1377,16 @@ plot.gsynth <- function(x,
         data[,"res"] <- as.factor(data[,"res"])
 
         N.b <- 1:N
-        
+
         p <- ggplot(data, aes(x = period, y = units,
-                              fill = res), position = "identity") 
-        p <- p + geom_tile(colour="gray90", size=0.1, stat="identity") 
-  
+                              fill = res), position = "identity")
+        p <- p + geom_tile(colour="gray90", size=0.1, stat="identity")
+
         p <- p +
-            labs(x = xlab, y = ylab, 
-                ## fill = "Value", 
+            labs(x = xlab, y = ylab,
+                ## fill = "Value",
                 title=main) +
-            theme_bw() + 
+            theme_bw() +
             scale_fill_manual(NA, breaks = breaks, values = col, labels=label)
 
         if(4%in%all) {
@@ -1416,17 +1415,17 @@ plot.gsynth <- function(x,
                                         margin = margin(10, 0, 10, 0))) +
         scale_x_continuous(expand = c(0, 0), breaks = T.b, labels = time.label[T.b]) +
         scale_y_continuous(expand = c(0, 0), breaks = N.b, labels = rev(sort(id)))
-        
+
         if(length(all)>=4) {
             p <- p + guides(fill=guide_legend(nrow=2,byrow=TRUE))
         }
-        suppressWarnings(print(p))
-    }    
+        return(p)
+    }
 }
 
 ## counterfactual adjust
 ct.adjsut <- function (Y.tr,
-                       Y.ct, 
+                       Y.ct,
                        T0) {
     T <- dim(Y.tr)[1]
     N <- dim(Y.tr)[2]
@@ -1447,5 +1446,5 @@ ct.adjsut <- function (Y.tr,
                 Y.tr.aug=Y.tr.aug,
                 Y.ct.aug=Y.ct.aug,
                 Yb=Yb))
- 
+
 }
